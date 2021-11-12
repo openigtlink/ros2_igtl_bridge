@@ -25,8 +25,46 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+
+find_package(Eigen3 REQUIRED)
+find_package(Boost REQUIRED system filesystem date_time thread)
+find_package(ament_cmake REQUIRED)
+find_package(control_msgs REQUIRED)
+find_package(moveit_msgs REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
+find_package(interactive_markers REQUIRED)
+find_package(geometric_shapes REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(pluginlib REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+
 find_package(rosidl_default_generators REQUIRED)
 find_package(OpenIGTLink REQUIRED)
+
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  ament_cmake
+  rclcpp
+  rclcpp_action
+  tf2_geometry_msgs
+  tf2_ros
+  moveit_msgs
+  moveit_core
+  moveit_ros_planning_interface
+  interactive_markers
+  tf2_geometry_msgs
+  moveit_ros_planning
+  pluginlib
+  Eigen3
+  Boost
+  control_msgs
+  )
+
+include_directories(${THIS_PACKAGE_INCLUDE_DIRS})
 
 #find_package(ros2_igtl_bridge REQUIRED)
 find_package(tf2 REQUIRED)
@@ -41,7 +79,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PoseArray.msg"
   "msg/PolyData.msg"
   "msg/Vector.msg"
-  DEPENDENCIES builtin_interfaces geometry_msgs sensor_msgs
+  DEPENDENCIES builtin_interfaces geometry_msgs sensor_msgs 
   )
 
 ament_export_dependencies(rosidl_default_runtime)
@@ -67,16 +105,19 @@ add_executable(igtl_node
 add_executable(igtl_test_listener src/igtl_test_listener.cpp)
 add_executable(igtl_test_publisher src/igtl_test_publisher.cpp)
 add_executable(tf_listener src/rib_tf2Transform.cpp)
+add_executable(spine_control src/spine_control.cpp)
 
 ament_target_dependencies(igtl_node rclcpp std_msgs sensor_msgs OpenIGTLink)
 ament_target_dependencies(igtl_test_listener rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(igtl_test_publisher rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(tf_listener rclcpp std_msgs sensor_msgs tf2 tf2_ros)
+ament_target_dependencies(spine_control ${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 rosidl_target_interfaces(igtl_node ${PROJECT_NAME} rosidl_typesupport_cpp)
 rosidl_target_interfaces(igtl_test_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
 rosidl_target_interfaces(igtl_test_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
 rosidl_target_interfaces(tf_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
+rosidl_target_interfaces(spine_control ${PROJECT_NAME} rosidl_typesupport_cpp)
 
 target_include_directories(igtl_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -94,12 +135,17 @@ target_include_directories(tf_listener PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+target_include_directories(spine_control PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
 
 install(TARGETS
   igtl_node
   igtl_test_listener
   igtl_test_publisher
   tf_listener
+  spine_control
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
