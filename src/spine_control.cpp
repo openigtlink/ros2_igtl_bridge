@@ -63,15 +63,15 @@ public:
     if(point->name.compare("Entry") == 0){
       valid_entry = true;
       // -603.73 401.57 150.40
-      entry.x = point->pointdata.x / 1000.0; // Convert mm to m
-      entry.y = point->pointdata.y / 1000.0; // Convert mm to m
+      entry.x = -point->pointdata.x / 1000.0; // Convert mm to m
+      entry.y = -point->pointdata.y / 1000.0; // Convert mm to m
       entry.z = point->pointdata.z / 1000.0; // Convert mm to m      
       RCLCPP_INFO(LOGGER, "[spine_control] Entry point has been received: \n");
     } else if(point->name.compare("Target") == 0){
       // -608.74 393.21 135.82
       valid_target = true;
-      target.x = point->pointdata.x / 1000.0; // Convert mm to m
-      target.y = point->pointdata.y / 1000.0; // Convert mm to m
+      target.x = -point->pointdata.x / 1000.0; // Convert mm to m
+      target.y = -point->pointdata.y / 1000.0; // Convert mm to m
       target.z = point->pointdata.z / 1000.0; // Convert mm to m      
       RCLCPP_INFO(LOGGER, "[spine_control] Target point has been received: \n");
     }
