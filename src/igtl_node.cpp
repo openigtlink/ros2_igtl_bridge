@@ -28,6 +28,12 @@ OpenIGTLinkNode::OpenIGTLinkNode() : Node(IGTL_DEFAULT_NODE_NAME), count_(0)
 {
   //publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
+   
+  //Declare parameters
+  this->declare_parameter("RIB_type");
+  this->declare_parameter("RIB_server_ip");
+  this->declare_parameter("RIB_port");
+  
 }
 
 
@@ -35,6 +41,12 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
 {
   //publisher_ = this->create_publisher<std_msgs::msg::String>("topic", 10);
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
+
+  //Declare parameters
+  this->declare_parameter("RIB_type");
+  this->declare_parameter("RIB_server_ip");
+  this->declare_parameter("RIB_port");
+  
 }
 
 
@@ -68,9 +80,11 @@ void OpenIGTLinkNode::addConverters()
 
 
   RCLCPP_ERROR(get_logger(), "Checking parameters.");  
+  
+  
   // run bridge as client or server
   std::string type;
-  if(this->get_parameter("/RIB_type",type))
+  if(this->get_parameter("RIB_type",type))
     {
     if(type == "client")
       {
@@ -117,7 +131,7 @@ void OpenIGTLinkNode::addConverters()
   
   if (this->isServer)
     {
-    if(this->get_parameter("/RIB_port", this->port))
+    if(this->get_parameter("RIB_port", this->port))
       {}
     else
       {
@@ -128,7 +142,7 @@ void OpenIGTLinkNode::addConverters()
   else // if this is a client
     {
     // get IP address
-    if(this->get_parameter("/RIB_server_ip", this->address))
+    if(this->get_parameter("RIB_server_ip", this->address))
       {}
     else
       {
@@ -136,7 +150,7 @@ void OpenIGTLinkNode::addConverters()
       std::cin >> this->address;
       }
     // get port
-    if(this->get_parameter("/RIB_port",this->port))
+    if(this->get_parameter("RIB_port",this->port))
       {}
     else
       {
