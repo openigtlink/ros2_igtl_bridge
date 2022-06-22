@@ -60,12 +60,19 @@ If the bridge is set up, you can launch the test procedure for communication wit
 
     $ ros2 run ros_igtl_bridge igtl_test_publisher
 
-It is possible to edit the launch files and set your IP & Port in the file. Run the node as server or client by adjusting the parameter RIB_type.
-Open the file and uncomment the lines:
+It is possible to set the bridge parameters from the command line:
 
-    $ <!--param name="RIB_server_ip" value="111.111.111.111" type="str"/-->
-    $ <!--param name="RIB_port" value="18944" type="int"/-->
-    $ <!--param name="RIB_type" value="client" type="str"/-->
+    $ ros2 run ros2_igtl_bridge igtl_node --ros-args -p RIB_port:=18944 -p RIB_type:="client" -p RIB_server_ip:="localhost"
+
+You can also edit the launch file and set your IP & Port. Open the bridge.launch file and edit the parameters:
+
+    $ <param name="RIB_server_ip" value="111.111.111.111" type="str"/>
+    $ <param name="RIB_port" value="18944" type="int"/>
+    $ <param name="RIB_type" value="client" type="str"/>
+    
+Then run the launch file as:
+
+    $ ros2 launch ros2_igtl_bridge bridge.launch
 
 The node can be run as server or client. If you executed the test procedure, the node will send
 a "ROS_IGTL_Test_Transform" with random translation. 
