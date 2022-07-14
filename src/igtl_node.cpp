@@ -53,7 +53,7 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
 void OpenIGTLinkNode::addConverters()
 {
 
-  RCLCPP_ERROR(get_logger(), "Adding converters.");
+  RCLCPP_INFO(get_logger(), "Adding converters.");
 
   
   this->converterManager = new RIBConverterManager;
@@ -79,7 +79,7 @@ void OpenIGTLinkNode::addConverters()
   //this->converterManager->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
 
 
-  RCLCPP_ERROR(get_logger(), "Checking parameters.");  
+  RCLCPP_INFO(get_logger(), "Checking parameters.");  
   
   
   // run bridge as client or server
