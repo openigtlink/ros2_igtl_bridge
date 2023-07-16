@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Class for Point
+  Program:   Converter Class for PointArray
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.
@@ -11,8 +11,8 @@
 
 =========================================================================*/
 
-#ifndef __RIBConverterPoint_H
-#define __RIBConverterPoint_H
+#ifndef __RIBConverterPointArray_H
+#define __RIBConverterPointArray_H
 
 #include "rib_converter.h"
 
@@ -20,19 +20,19 @@
 #include "rclcpp/rclcpp.hpp"
 
 // ROS message header files
-#include "ros2_igtl_bridge/msg/point.hpp"
+#include "ros2_igtl_bridge/msg/point_array.hpp"
 
 // OpenIGTLink message files
 #include "igtlStringMessage.h"
 
 
-class RIBConverterPoint : public RIBConverter<ros2_igtl_bridge::msg::Point>
+class RIBConverterPointArray : public RIBConverter<ros2_igtl_bridge::msg::PointArray>
 {
 
 public:
-  RIBConverterPoint();
-  RIBConverterPoint(rclcpp::Node::SharedPtr n);
-  RIBConverterPoint(const char* topicPublish, const char* topicSubscribe, rclcpp::Node::SharedPtr n=NULL);
+  RIBConverterPointArray();
+  RIBConverterPointArray(rclcpp::Node::SharedPtr n);
+  RIBConverterPointArray(const char* topicPublish, const char* topicSubscribe, rclcpp::Node::SharedPtr n=NULL);
   
   //virtual uint32_t queueSizePublish() { return 10; }
   //virtual uint32_t queueSizeSubscribe() { return 10; }
@@ -41,9 +41,7 @@ public:
 public:  
   virtual int onIGTLMessage(igtl::MessageHeader * header);
  protected:
-  virtual void onROSMessage(const ros2_igtl_bridge::msg::Point::SharedPtr msg);
+  virtual void onROSMessage(const ros2_igtl_bridge::msg::PointArray::SharedPtr msg);
 };
 
-#endif // __RIBConverterPoint_H
-
-
+#endif // __RIBConverterPointArray_H

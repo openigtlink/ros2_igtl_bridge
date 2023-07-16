@@ -35,9 +35,8 @@ find_package(tf2_ros REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/String.msg"
   "msg/Transform.msg"
-  "msg/Point.msg"
+  "msg/PointArray.msg"
   "msg/Image.msg"
-  "msg/PointCloud.msg"
   "msg/PoseArray.msg"
   "msg/PolyData.msg"
   "msg/Vector.msg"
@@ -57,9 +56,8 @@ add_executable(igtl_node
   src/rib_converter_base.cpp
   src/rib_converter_string.cpp
   src/rib_converter_transform.cpp
-  src/rib_converter_point.cpp
   src/rib_converter_image.cpp
-  src/rib_converter_pointcloud.cpp
+  src/rib_converter_pointarray.cpp
   src/rib_converter_posearray.cpp
   #src/rib_converter_polydata.cpp
   )
