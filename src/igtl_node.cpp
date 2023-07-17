@@ -29,10 +29,10 @@ OpenIGTLinkNode::OpenIGTLinkNode() : Node(IGTL_DEFAULT_NODE_NAME), count_(0)
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
    
   //Declare parameters
-  this->declare_parameter("RIB_type", rclcpp::PARAMETER_STRING);
-  this->declare_parameter("RIB_server_ip", rclcpp::PARAMETER_STRING);
-  this->declare_parameter("RIB_port", rclcpp::PARAMETER_INTEGER);
-  
+  this->declare_parameter("RIB_type", "server");
+  this->declare_parameter("RIB_server_ip", "127.0.0.1");
+  this->declare_parameter("RIB_port", "18944");
+
 }
 
 
@@ -42,10 +42,9 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
 
   //Declare parameters
-  this->declare_parameter("RIB_type", rclcpp::PARAMETER_STRING);
-  this->declare_parameter("RIB_server_ip", rclcpp::PARAMETER_STRING);
-  this->declare_parameter("RIB_port", rclcpp::PARAMETER_INTEGER);
-  
+  this->declare_parameter("RIB_type", "server");
+  this->declare_parameter("RIB_server_ip", "127.0.0.1");
+  this->declare_parameter("RIB_port", "18944");
 }
 
 
