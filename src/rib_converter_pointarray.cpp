@@ -1,6 +1,6 @@
 /*=========================================================================
 
-  Program:   Converter Class for Point
+  Program:   Converter Class for PointArray
   Language:  C++
 
   Copyright (c) Brigham and Women's Hospital. All rights reserved.
@@ -11,28 +11,28 @@
 
   =========================================================================*/
 
-#include "rib_converter_point.h"
+#include "rib_converter_pointarray.h"
 #include "rib_converter_manager.h"
 #include "rclcpp/rclcpp.hpp"
 #include "igtlPointMessage.h"
 #include "geometry_msgs/msg/point.hpp"
 
-RIBConverterPoint::RIBConverterPoint()
-  : RIBConverter<ros2_igtl_bridge::msg::Point>()
+RIBConverterPointArray::RIBConverterPointArray()
+  : RIBConverter<ros2_igtl_bridge::msg::PointArray>()
 {
 }
 
-RIBConverterPoint::RIBConverterPoint(rclcpp::Node::SharedPtr n)
-  : RIBConverter<ros2_igtl_bridge::msg::Point>(n)
+RIBConverterPointArray::RIBConverterPointArray(rclcpp::Node::SharedPtr n)
+  : RIBConverter<ros2_igtl_bridge::msg::PointArray>(n)
 {
 }
 
-RIBConverterPoint::RIBConverterPoint(const char* topicPublish, const char* topicSubscribe, rclcpp::Node::SharedPtr n)
-  : RIBConverter<ros2_igtl_bridge::msg::Point>(topicPublish, topicSubscribe, n)
+RIBConverterPointArray::RIBConverterPointArray(const char* topicPublish, const char* topicSubscribe, rclcpp::Node::SharedPtr n)
+  : RIBConverter<ros2_igtl_bridge::msg::PointArray>(topicPublish, topicSubscribe, n)
 {
 }
 
-int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
+int RIBConverterPointArray::onIGTLMessage(igtl::MessageHeader * header)
 {
   igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
   pointMsg->SetMessageHeader(header);
@@ -58,22 +58,21 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
   
   if (npoints > 0)
     {
+    ros2_igtl_bridge::msg::PointArray msg;
+    msg.pointdata.resize(npoints);
+
     for (int i = 0; i < npoints; i ++)
       {
       igtlFloat32 point[3];
       igtl::PointElement::Pointer elem = igtl::PointElement::New();
       pointMsg->GetPointElement (i,elem);
       elem->GetPosition(point);
-      
-      ros2_igtl_bridge::msg::Point msg;
-      
-      msg.pointdata.x = point[0];
-      msg.pointdata.y = point[1];
-      msg.pointdata.z = point[2];
+      msg.pointdata[i].x = point[0];
+      msg.pointdata[i].y = point[1];
+      msg.pointdata[i].z = point[2];
       msg.name = elem->GetName();
-      
-      this->publisher->publish(msg);
       }
+    this->publisher->publish(msg);
     }
   else
     {
@@ -85,28 +84,37 @@ int RIBConverterPoint::onIGTLMessage(igtl::MessageHeader * header)
   
 }
 
-void RIBConverterPoint::onROSMessage(const ros2_igtl_bridge::msg::Point::SharedPtr msg)
+
+void RIBConverterPointArray::onROSMessage(const ros2_igtl_bridge::msg::PointArray::SharedPtr msg)
 {
-  
+
   igtl::Socket::Pointer socket = this->manager->GetSocket();
-  std::cout<< "onROSMessage (Point): "<< msg->name <<std::endl;
-  
   if (socket.IsNull())
     {
     return;
     }
 
-  geometry_msgs::msg::Point point = msg->pointdata;
-  
+  int pcl_size = msg->pointdata.size();
+  if (!pcl_size)
+    {
+    RCLCPP_ERROR(this->node->get_logger(), "[ROS-IGTL-Bridge] PointArray is empty!");
+    return;
+    }
+
   igtl::PointMessage::Pointer pointMsg = igtl::PointMessage::New();
   pointMsg->SetDeviceName(msg->name.c_str());
-  
-  igtl::PointElement::Pointer pointE; 
-  pointE = igtl::PointElement::New();
-  pointE->SetPosition(point.x, point.y,point.z);
-  pointMsg->AddPointElement(pointE);
-  pointMsg->Pack();
-  
-  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
-}
 
+  for (int i = 0; i<pcl_size;i++)
+    {
+    std::stringstream ss;
+    igtl::PointElement::Pointer pointE;
+    pointE = igtl::PointElement::New();
+    pointE->SetPosition(msg->pointdata[i].x, msg->pointdata[i].y,msg->pointdata[i].z);
+    ss << msg->name << i;
+    pointE->SetName(ss.str().c_str());
+    pointMsg->AddPointElement(pointE);
+    }
+  pointMsg->Pack();
+  socket->Send(pointMsg->GetPackPointer(), pointMsg->GetPackSize());
+
+}

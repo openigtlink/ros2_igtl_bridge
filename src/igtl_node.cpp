@@ -12,10 +12,9 @@
 #include "rib_converter_manager.h"
 #include "rib_converter_string.h"
 #include "rib_converter_transform.h"
-#include "rib_converter_point.h"
+#include "rib_converter_pointarray.h"
 #include "rib_converter_image.h"
 #include "rib_converter_posearray.h"
-#include "rib_converter_pointcloud.h"
 
 //#include "rib_converter_polydata.h"
 
@@ -30,9 +29,9 @@ OpenIGTLinkNode::OpenIGTLinkNode() : Node(IGTL_DEFAULT_NODE_NAME), count_(0)
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
    
   //Declare parameters
-  this->declare_parameter("RIB_type");
-  this->declare_parameter("RIB_server_ip");
-  this->declare_parameter("RIB_port");
+  this->declare_parameter("RIB_type", rclcpp::PARAMETER_STRING);
+  this->declare_parameter("RIB_server_ip", rclcpp::PARAMETER_STRING);
+  this->declare_parameter("RIB_port", rclcpp::PARAMETER_INTEGER);
   
 }
 
@@ -43,9 +42,9 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
   //timer_ = this->create_wall_timer(500ms, std::bind(&OpenIGTLinkNode::timer_callback, this));
 
   //Declare parameters
-  this->declare_parameter("RIB_type");
-  this->declare_parameter("RIB_server_ip");
-  this->declare_parameter("RIB_port");
+  this->declare_parameter("RIB_type", rclcpp::PARAMETER_STRING);
+  this->declare_parameter("RIB_server_ip", rclcpp::PARAMETER_STRING);
+  this->declare_parameter("RIB_port", rclcpp::PARAMETER_INTEGER);
   
 }
 
@@ -64,18 +63,16 @@ void OpenIGTLinkNode::addConverters()
   // Regisgter converter classes
   RIBConverterTransform* transform = new RIBConverterTransform;
   RIBConverterString* string = new RIBConverterString;
-  RIBConverterPoint * point = new RIBConverterPoint;
+  RIBConverterPointArray * pointarray = new RIBConverterPointArray;
   RIBConverterPoseArray * posearray = new RIBConverterPoseArray;
   // RIBConverterImage* image = new RIBConverterImage;
-  // RIBConverterPointCloud* pointcloud = new RIBConverterPointCloud;  
   // RIBConverterPolyData* polydata = new RIBConverterPolyData;
 
   this->converterManager->AddConverter(string, 10, "IGTL_STRING_IN", "IGTL_STRING_OUT");
   this->converterManager->AddConverter(transform, 10, "IGTL_TRANSFORM_IN", "IGTL_TRANSFORM_OUT");
-  this->converterManager->AddConverter(point, 10, "IGTL_POINT_IN", "IGTL_POINT_OUT");
+  this->converterManager->AddConverter(pointarray, 10, "IGTL_POINT_IN", "IGTL_POINT_OUT");
   this->converterManager->AddConverter(posearray, 10, "IGTL_POSEARRAY_IN", "IGTL_POSEARRAY_OUT");
   // this->converterManager->AddConverter(image, 10, "IGTL_IMAGE_IN", "IGTL_IMAGE_OUT");
-  // this->converterManager->AddConverter(pointcloud, 10, "IGTL_POINTCLOUD_IN", "IGTL_POINTCLOUD_OUT");
   //this->converterManager->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
 
 

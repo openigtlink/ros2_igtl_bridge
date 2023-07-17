@@ -2,14 +2,14 @@
 #include <chrono>
 #include <functional>
 #include <string>
+#include <math.h>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "ros2_igtl_bridge/msg/string.hpp"
 #include "ros2_igtl_bridge/msg/transform.hpp"
-#include "ros2_igtl_bridge/msg/point.hpp"
+#include "ros2_igtl_bridge/msg/point_array.hpp"
 #include "ros2_igtl_bridge/msg/pose_array.hpp"
-// #include "ros2_igtl_bridge/msg/point_cloud.hpp"
 // #include "sensor_msgs/msg/image.hpp"
 
 using std::placeholders::_1;
@@ -22,9 +22,8 @@ public:
   {
     string_publisher_      = this->create_publisher<ros2_igtl_bridge::msg::String>("IGTL_STRING_OUT", 10);
     transform_publisher_   = this->create_publisher<ros2_igtl_bridge::msg::Transform>("IGTL_TRANSFORM_OUT", 10);
-    point_publisher_       = this->create_publisher<ros2_igtl_bridge::msg::Point>("IGTL_POINT_OUT", 10);
+    pointarray_publisher_  = this->create_publisher<ros2_igtl_bridge::msg::PointArray>("IGTL_POINT_OUT", 10);
     posearray_publisher_   = this->create_publisher<ros2_igtl_bridge::msg::PoseArray>("IGTL_POSEARRAY_OUT", 10);
-    // point_cloud_publisher_ = this->create_publisher<ros2_igtl_bridge::msg::PointCloud>("IGTL_POINT_CLOUD_OUT", 10);
     // image_publisher_       = this->create_publisher<sensor_msgs::msg::Image>("IGTL_IMAGE_OUT", 10);
 
     timer_ = this->create_wall_timer(500ms, std::bind(&IGTLPublisher::timer_callback, this));    
@@ -55,13 +54,19 @@ private:
     transform_publisher_->publish(transform_msg);
 
     // Point message
-    auto point_msg       = ros2_igtl_bridge::msg::Point();
-    point_msg.name = "test_point";
-    point_msg.pointdata.x = 40.0;
-    point_msg.pointdata.y = 50.0;
-    point_msg.pointdata.z = 60.0;
-    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", point_msg.name.c_str());
-    point_publisher_->publish(point_msg);
+    auto pointarray_msg       = ros2_igtl_bridge::msg::PointArray();
+    pointarray_msg.name = "test_point";
+    int npoints = 20;
+    pointarray_msg.pointdata.resize(npoints);
+    for (int i = 0; i < npoints; i ++)
+      {
+      pointarray_msg.pointdata[i].x = 20.0 * cos(M_PI * (float)i / 10.0);
+      pointarray_msg.pointdata[i].y = 20.0 * sin(M_PI * (float)i / 10.0);
+      pointarray_msg.pointdata[i].z = 5.0* (float)i;
+      }
+
+    RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", pointarray_msg.name.c_str());
+    pointarray_publisher_->publish(pointarray_msg);
 
     // PoseArray message
     auto posearray_msg       = ros2_igtl_bridge::msg::PoseArray();
@@ -82,11 +87,6 @@ private:
     RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", posearray_msg.name.c_str());
     posearray_publisher_->publish(posearray_msg);
     
-    // // PointCloud message
-    // auto point_cloud_msg = ros2_igtl_bridge::msg::PointCloud();
-    // RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", point_cloud_msg.name.c_str());
-    // point_cloud_publisher_->publish(point_cloud_msg);
-
     // // Image message
     // auto image_msg;      = sensor_msgs::msg::Image();
     // RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", image_msg.name.c_str());
@@ -98,11 +98,10 @@ private:
   
   rclcpp::TimerBase::SharedPtr timer_;
   
-  rclcpp::Publisher<ros2_igtl_bridge::msg::String>::SharedPtr     string_publisher_;
-  rclcpp::Publisher<ros2_igtl_bridge::msg::Transform>::SharedPtr  transform_publisher_;
-  rclcpp::Publisher<ros2_igtl_bridge::msg::Point>::SharedPtr      point_publisher_;
-  rclcpp::Publisher<ros2_igtl_bridge::msg::PoseArray>::SharedPtr  posearray_publisher_;  
-  // rclcpp::Publisher<ros2_igtl_bridge::msg::PointCloud>::SharedPtr point_cloud_publisher_;  
+  rclcpp::Publisher<ros2_igtl_bridge::msg::String>::SharedPtr      string_publisher_;
+  rclcpp::Publisher<ros2_igtl_bridge::msg::Transform>::SharedPtr   transform_publisher_;
+  rclcpp::Publisher<ros2_igtl_bridge::msg::PointArray>::SharedPtr pointarray_publisher_;
+  rclcpp::Publisher<ros2_igtl_bridge::msg::PoseArray>::SharedPtr   posearray_publisher_;
   // rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr           image_publisher_;
 
 };
