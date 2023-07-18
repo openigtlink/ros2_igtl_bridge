@@ -31,7 +31,7 @@ OpenIGTLinkNode::OpenIGTLinkNode() : Node(IGTL_DEFAULT_NODE_NAME), count_(0)
   //Declare parameters
   this->declare_parameter("RIB_type", "server");
   this->declare_parameter("RIB_server_ip", "127.0.0.1");
-  this->declare_parameter("RIB_port", "18944");
+  this->declare_parameter("RIB_port", 18944);
 
 }
 
@@ -44,7 +44,7 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
   //Declare parameters
   this->declare_parameter("RIB_type", "server");
   this->declare_parameter("RIB_server_ip", "127.0.0.1");
-  this->declare_parameter("RIB_port", "18944");
+  this->declare_parameter("RIB_port", 18944);
 }
 
 
