@@ -31,7 +31,7 @@ OpenIGTLinkNode::OpenIGTLinkNode() : Node(IGTL_DEFAULT_NODE_NAME), count_(0)
   //Declare parameters
   this->declare_parameter("RIB_type", "server");
   this->declare_parameter("RIB_server_ip", "127.0.0.1");
-  this->declare_parameter("RIB_port", "18944");
+  this->declare_parameter("RIB_port", 18944);
 
 }
 
@@ -44,14 +44,14 @@ OpenIGTLinkNode::OpenIGTLinkNode(const std::string nodeName) : Node(nodeName), c
   //Declare parameters
   this->declare_parameter("RIB_type", "server");
   this->declare_parameter("RIB_server_ip", "127.0.0.1");
-  this->declare_parameter("RIB_port", "18944");
+  this->declare_parameter("RIB_port", 18944);
 }
 
 
 void OpenIGTLinkNode::addConverters()
 {
 
-  RCLCPP_ERROR(get_logger(), "Adding converters.");
+  RCLCPP_INFO(get_logger(), "Adding converters.");
 
   
   this->converterManager = new RIBConverterManager;
@@ -75,7 +75,7 @@ void OpenIGTLinkNode::addConverters()
   //this->converterManager->AddConverter(polydata, 10, "IGTL_POLYDATA_IN", "IGTL_POLYDATA_OUT");
 
 
-  RCLCPP_ERROR(get_logger(), "Checking parameters.");  
+  RCLCPP_INFO(get_logger(), "Checking parameters.");  
   
   
   // run bridge as client or server
