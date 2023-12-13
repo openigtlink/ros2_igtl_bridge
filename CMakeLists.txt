@@ -71,10 +71,18 @@ ament_target_dependencies(igtl_test_listener rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(igtl_test_publisher rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(tf_listener rclcpp std_msgs sensor_msgs tf2 tf2_ros)
 
-rosidl_target_interfaces(igtl_node ${PROJECT_NAME} rosidl_typesupport_cpp)
-rosidl_target_interfaces(igtl_test_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
-rosidl_target_interfaces(igtl_test_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
-rosidl_target_interfaces(tf_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
+if("$ENV{ROS_DISTRO}" STRGREATER "galactic")
+  rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+  target_link_libraries(igtl_node "${cpp_typesupport_target}") 
+  target_link_libraries(igtl_test_listener "${cpp_typesupport_target}") 
+  target_link_libraries(igtl_test_publisher "${cpp_typesupport_target}") 
+  target_link_libraries(tf_listener "${cpp_typesupport_target}")
+else()
+  rosidl_target_interfaces(igtl_node ${PROJECT_NAME} rosidl_typesupport_cpp)
+  rosidl_target_interfaces(igtl_test_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
+  rosidl_target_interfaces(igtl_test_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
+  rosidl_target_interfaces(tf_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
+endif()
 
 target_include_directories(igtl_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
