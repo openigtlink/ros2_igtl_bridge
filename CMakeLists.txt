@@ -71,7 +71,6 @@ ament_target_dependencies(igtl_test_listener rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(igtl_test_publisher rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(tf_listener rclcpp std_msgs sensor_msgs tf2 tf2_ros)
 
-message("* ROS2 distro: $ENV{ROS_DISTRO}")
 if("$ENV{ROS_DISTRO}" STRGREATER "galactic")
   rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
   target_link_libraries(igtl_node "${cpp_typesupport_target}") 
