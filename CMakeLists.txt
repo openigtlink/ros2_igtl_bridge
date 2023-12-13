@@ -71,6 +71,7 @@ ament_target_dependencies(igtl_test_listener rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(igtl_test_publisher rclcpp std_msgs sensor_msgs)
 ament_target_dependencies(tf_listener rclcpp std_msgs sensor_msgs tf2 tf2_ros)
 
+message("* ROS2 distro: $ENV{ROS_DISTRO}")
 if("$ENV{ROS_DISTRO}" STRGREATER "humble")
   rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
   target_link_libraries(igtl_node "${cpp_typesupport_target}") 
@@ -83,9 +84,6 @@ else()
   rosidl_target_interfaces(igtl_test_publisher ${PROJECT_NAME} rosidl_typesupport_cpp)
   rosidl_target_interfaces(tf_listener ${PROJECT_NAME} rosidl_typesupport_cpp)
 endif()
-
-
- 
 
 target_include_directories(igtl_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
